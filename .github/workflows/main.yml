@@ -10,13 +10,24 @@ jobs:
 
     steps:
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Install Android platform
-        run:                 /usr/local/lib/android/sdk/cmdline-tools/16.0/bin/sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ANDROID_HOME="$HOME/android-sdk"
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          curl -fsSL "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" -o /tmp/android-tools.zip
+          unzip -q /tmp/android-tools.zip -d /tmp/android-tools
+          mv /tmp/android-tools/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -302,3 +313,4 @@ jobs:
           path: release-pack/
           retention-days: 30
           if-no-files-found: error
+
