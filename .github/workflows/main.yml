@@ -25,7 +25,7 @@ jobs:
           unzip -q /tmp/android-tools.zip -d /tmp/android-tools
           mv /tmp/android-tools/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;35.0.0"
           echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
           echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
 
@@ -74,14 +74,14 @@ jobs:
 
           android {
               namespace 'za.co.dealchecksa.app'
-              compileSdk 35
+              compileSdk 36
 
               defaultConfig {
                   applicationId 'za.co.dealchecksa.app'
                   minSdk 24
-                  targetSdk 35
-                  versionCode 1
-                  versionName '1.0.0'
+                  targetSdk 36
+                  versionCode 2
+                  versionName '1.0.1'
               }
 
               signingConfigs {
@@ -297,10 +297,10 @@ jobs:
       - name: Prepare release files
         shell: bash
         run: |
-          cp app/build/outputs/bundle/release/app-release.aab release-pack/DealCheck-SA-v1.0.0.aab
-          sha256sum release-pack/DealCheck-SA-v1.0.0.aab > release-pack/SHA256.txt
+          cp app/build/outputs/bundle/release/app-release.aab release-pack/DealCheck-SA-v1.0.1.aab
+          sha256sum release-pack/DealCheck-SA-v1.0.1.aab > release-pack/SHA256.txt
           cat > release-pack/IMPORTANT.txt <<'EOF'
-          Upload DealCheck-SA-v1.0.0.aab to Google Play Console.
+          Upload DealCheck-SA-v1.0.1.aab to Google Play Console.
           Keep dealcheck-upload.keystore and upload-key-password.txt permanently safe.
           They are required to sign every future DealCheck SA update.
           Never publish or share the keystore or password.
@@ -313,4 +313,5 @@ jobs:
           path: release-pack/
           retention-days: 30
           if-no-files-found: error
+
 
